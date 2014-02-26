@@ -55,6 +55,7 @@ func GetData() interface{} {
 			defer response.Body.Close()
 			out, _ := os.Create("pubs.cache.csv")
 			defer out.Close()
+			fmt.Print("Got the pub data...")
 			reader2 := io.TeeReader(response.Body, out)
 			pubs := Format(reader2)
 			io.Copy(out, response.Body)

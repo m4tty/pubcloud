@@ -106,7 +106,7 @@ module.exports = function(grunt) {
 				dest: 'dist/css/<%= pkg.name %>.css'
 			},
 			js: {
-				src: ['src/js/libs/global/jquery.min.js', 'src/js/libs/global/*.js', '<%= browserify.task.dest %>'],
+				src: ['src/js/libs/global/jquery.min.js', 'src/js/libs/global/*.js', '<%= browserify.task.dest %>', 'src/js/libs/d3.js', 'src/js/libs/d3.layout.cloud.js'],
 				dest: 'dist/js/<%= pkg.name %>.js'
 			}
 		},
