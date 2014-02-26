@@ -1,6 +1,6 @@
 package resources
 
-type PubsResource struct {
+type Pubs struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	Address     string `json:"address"`
