@@ -1,1 +1,4 @@
 pubcloud
+web/static/dist/
+web/static/node_modules/
+pubs.cache.csv
