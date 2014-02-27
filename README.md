@@ -14,3 +14,9 @@ npm install
 
 grunt --force
 
+
+
+http://localhost:8080/pubs
+
+
+http://localhost:8080/static/home.html
