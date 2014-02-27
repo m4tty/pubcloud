@@ -8,15 +8,9 @@ import "github.com/m4tty/pubcloud/domain/pubs"
 import ()
 
 func GetPubsHandler(w http.ResponseWriter, r *http.Request) {
-	//	dataMgr := pubsDomain.NewPubsMgr(dataManager)
-	// result, err := dataMgr.GetPubs()
-
-	// if err != nil {
-	// 	return
-	// }
-	//result := new(resources.Pubs)
 	dataRetriever := pubsDomain.ODCPubDataRetriever{}
-	result := dataRetriever.GetPubData(nil)
+	dataTransformer := pubsDomain.ODCDataTransformer{}
+	result := dataRetriever.GetPubData(dataTransformer)
 	js, error := json.MarshalIndent(result, "", "  ")
 	if error != nil {
 		return
@@ -25,17 +19,3 @@ func GetPubsHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(js)
 	return
 }
-
-//PubDataGetter
-// - PubDataGet
-
-//PubDataGetter implementation depends on Formatter, formatter takes a IOReader
-
-//Formatter
-// -
-
-//func NewFormatter(r io.Reader) *Formatter
-
-//dec := json.NewFormatter(os.Stdin)
-
-//dec.Decode(v interface{}) error
