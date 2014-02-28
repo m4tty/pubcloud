@@ -1,47 +1,35 @@
 package pubsDomain
 
 import (
-	"bufio"
-
 	"fmt"
 	"github.com/m4tty/pubcloud/web/resources"
 	"io"
-	"net/http"
 	"os"
 )
 
 type ODCPubDataRetriever struct {
+	transformer PubDataTransformer
+	rawGetter   RawDataGetter
 }
 
-func (retriever ODCPubDataRetriever) GetPubData(transformer PubDataTransformer) []resources.Pubs {
-	var reader io.Reader
-	var fileName = "./pubs.cache.csv"
-	if isCached, _ := exists(fileName); isCached == true {
-		f, err := os.Open(fileName)
-		if err != nil {
-			fmt.Printf("error opening file: %v\n", err)
-			os.Exit(1)
-		}
-		reader = bufio.NewReader(f)
-		pubs, _ := transformer.PubDataTransform(reader)
-		return pubs
+func NewODCPubDataRetriever(raw RawDataGetter, trans PubDataTransformer) *ODCPubDataRetriever {
+	return &ODCPubDataRetriever{trans, raw}
+}
+func (retriever ODCPubDataRetriever) GetPubData() ([]resources.Pubs, error) {
+
+	var location = "http://data.denvergov.org/download/gis/liquor_licenses/csv/liquor_licenses.csv"
+	reader, err := retriever.rawGetter.RawDataGet(location)
+	defer reader.Close()
+	if err != nil {
+		fmt.Printf("%s", err)
+		return nil, err
 	} else {
-		fmt.Print("Going out to get the pub data...")
-		response, err := http.Get("http://data.denvergov.org/download/gis/liquor_licenses/csv/liquor_licenses.csv")
-		if err != nil {
-			fmt.Printf("%s", err)
-			os.Exit(1)
-			return nil
-		} else {
-			defer response.Body.Close()
-			out, _ := os.Create("pubs.cache.csv")
-			defer out.Close()
-			fmt.Print("Got the pub data...")
-			reader2 := io.TeeReader(response.Body, out)
-			pubs, _ := transformer.PubDataTransform(reader2)
-			io.Copy(out, response.Body)
-			return pubs
-		}
+		out, _ := os.Create("pubs.cache.csv")
+		defer out.Close()
+		reader2 := io.TeeReader(reader, out)
+		pubs, _ := retriever.transformer.PubDataTransform(reader)
+		io.Copy(out, reader2)
+		return pubs, nil
 	}
 
 }

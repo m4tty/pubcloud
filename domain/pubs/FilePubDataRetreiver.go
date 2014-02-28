@@ -10,6 +10,8 @@ import (
 )
 
 type FilePubDataRetriever struct {
+	transformer PubDataTransformer
+	rawGetter   RawDataGetter
 }
 
 func (retriever FilePubDataRetriever) GetPubData(transformer PubDataTransformer) []resources.Pubs {

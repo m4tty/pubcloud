@@ -8,9 +8,11 @@ import "github.com/m4tty/pubcloud/domain/pubs"
 import ()
 
 func GetPubsHandler(w http.ResponseWriter, r *http.Request) {
-	dataRetriever := pubsDomain.ODCPubDataRetriever{}
 	dataTransformer := pubsDomain.ODCDataTransformer{}
-	result := dataRetriever.GetPubData(dataTransformer)
+	rawGetter := pubsDomain.HTTPRawGetter{}
+	dataRetriever := pubsDomain.NewODCPubDataRetriever(rawGetter, dataTransformer)
+
+	result, _ := dataRetriever.GetPubData()
 	js, error := json.MarshalIndent(result, "", "  ")
 	if error != nil {
 		return

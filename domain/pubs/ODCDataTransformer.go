@@ -15,10 +15,10 @@ func (transformer ODCDataTransformer) PubDataTransform(r interface{}) ([]resourc
 		reader := csv.NewReader(v)
 		lines, _ := reader.ReadAll()
 
-		pubs := make([]resources.Pubs, len(lines))
+		pubs := make([]resources.Pubs, len(lines)-1)
 
 		for i, line := range lines {
-			if i != 0 {
+			if i != 0 && line[3] != "" {
 				pub := resources.Pubs{
 					Name: line[3],
 				}
